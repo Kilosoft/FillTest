@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using BenchmarkDotNet.Attributes;
 
 
 namespace FillTest
 {
-    class ShaganovTest : IFillTest
+    public class ShaganovTest : IFillTest
     {
         public int[] GetArea(byte[] points, byte trashold, int startX, int startY, int width, int heigth)
         {

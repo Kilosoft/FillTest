@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Diagnostics;
+using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Running;
 
 namespace FillTest
 {
-    class Program
+    public class Benchmarks
     {
-        static void Main(string[] args)
+        [Benchmark]
+        public int[] ShaganovTest()
         {
             var width = 2048;
             var height = 2048;
@@ -14,37 +17,34 @@ namespace FillTest
             int startX = width / 2;
             int startY = height / 2;
             byte trashold = 255;
-
-            var st = new Stopwatch();
             var shaganovTest = new ShaganovTest();
+            var image = shaganovTest.GetArea(emptyPoints, trashold, startX, startY, width, height);
+            return image;
+        }
 
-            //Test 1
-            {
-                st.Start();
-                var image = shaganovTest.GetArea(emptyPoints, trashold, startX, startY, width, height);
-                st.Stop();
-                var ts = st.Elapsed;
-                var resultShaganov = "Result EMPTY Shaganov:" + string.Format("{0:00}:{1:00}:{2:00}.{3:00}", ts.Hours, ts.Minutes, ts.Seconds, ts.Milliseconds / 10);
+        [Benchmark]
+        public int[] Shaganov2()
+        { var width = 2048;
+            var height = 2048;
+            var emptyPoints = TestArrea.CreateEmpty(width, height);
+            var rectPoints = TestArrea.CreateRect(width, height);
+            int startX = width / 2;
+            int startY = height / 2;
+            byte trashold = 255;
+            var shaganovTest = new ShaganovTest();
+            var image = shaganovTest.GetArea(rectPoints, trashold, startX, startY, width, height);
+            return image;
+        }
+    }
+    class Program
+    {
+        static void Main(string[] args)
+        {
 
-                Console.WriteLine(resultShaganov);
-                Image.SaveImage("sahanov_empty", image, width, height);
-            }
-            st.Reset();
-            //Test 2
-            {
-                st.Start();
-                var image = shaganovTest.GetArea(rectPoints, trashold, startX, startY, width, height);
-                st.Stop();
-                var ts = st.Elapsed;
-                var resultShaganov = "Result RECT Shaganov:" + string.Format("{0:00}:{1:00}:{2:00}.{3:00}", ts.Hours, ts.Minutes, ts.Seconds, ts.Milliseconds / 10);
-                
-                Console.WriteLine(resultShaganov);
-                Image.SaveImage("sahanov_rect", image, width, height);
-            }
+            var tests = BenchmarkRunner.Run<Benchmarks>();
 
-
-
-            Console.ReadKey();
+         
+            
         }
         
     }
